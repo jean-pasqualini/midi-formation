@@ -1,13 +1,22 @@
 version: '3'
 services:
+    varnish:
+      image: million12/varnish
+      ports:
+        - "80:80"
+        - "6082:6082"
+      environment:
+        - "VCL_CONFIG=/data/varnish.vcl"
+      volumes:
+        - "./docker/varnish/varnish.vcl:/data/varnish.vcl"
     app:
         build: ./
         working_dir: /app
+        ports:
+          - "8080:8080"
         volumes:
           - ./:/app
           - $HOME/.composer:/root/.composer
-        ports:
-          - "80:8080"
         command: ./run.sh
     redis:
         image: redis
